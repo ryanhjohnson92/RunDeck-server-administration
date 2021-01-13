@@ -18,6 +18,15 @@ else
 fi
 SCRIPT
 
+$rundeck = <<-SCRIPT
+yum update -y 
+rpm -Uvh http://repo.rundeck.org/latest.rpm
+yum install rundeck java -y
+yum update rundeck -y
+service rundeckd start
+SCRIPT
+
+
 $docker = <<-SCRIPT
 yum update -y 
 
@@ -46,7 +55,7 @@ usermod -aG docker $USER
 echo "Creating RunDeck service"
 
 # create runddeck, jenkins and prometheus containers
-docker run -d --name some-rundeck -p 4440:4440 -v data:/home/rundeck/server/data rundeck/rundeck:3.3.7
+# docker run -d --name some-rundeck -p 4440:4440 -v data:/home/rundeck/server/data rundeck/rundeck:3.3.7
 
 echo "Creating Jenkins service"
 
@@ -83,7 +92,9 @@ Vagrant.configure("2") do |config|
         end
       end
       node1.vm.provision "shell", inline: $sdb1
+      node1.vm.provision "shell", inline: $rundeck
       node1.vm.provision "shell", inline: $docker
+      
     end
   
     config.vm.define "node2" do |node2|
