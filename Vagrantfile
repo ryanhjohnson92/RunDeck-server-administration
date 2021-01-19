@@ -24,6 +24,8 @@ rpm -Uvh http://repo.rundeck.org/latest.rpm
 yum install rundeck java -y
 yum update rundeck -y
 service rundeckd start
+cp /vagrant/framework.properties /etc/rundeck/
+cp /vagrant/rundeck.properties /etc/rundeck/
 SCRIPT
 
 
