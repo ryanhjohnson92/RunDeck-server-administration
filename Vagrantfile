@@ -22,7 +22,6 @@ systemctl restart sshd
 SCRIPT
 
 $rundeck = <<-SCRIPT
-sudo su -
 yum update -y 
 rpm -Uvh http://repo.rundeck.org/latest.rpm
 yum install rundeck java -y
@@ -72,6 +71,40 @@ echo "Creating Prometheus service"
 # docker run -d -p 9090:9090 prom/prometheus
 SCRIPT
 
+$install = <<SCRIPT
+
+sudo yum -y install sshpass
+ssh-keygen -t rsa -b 4096 -C "ryan.johnson@wrenkitchens.com" -N "" -f /home/vagrant/.ssh/id_rsa
+chmod -R 755 /home/vagrant/.ssh
+chmod o+x /home/vagrant
+
+cat > servers.xml << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+<node name="node2"
+  osFamily="unix"
+  username="vagrant"
+  hostname="192.168.100.11"
+  sudo-command-enabled="true"
+  ssh-key-storage-path="keys/private.key"
+  />
+<node name="node3"
+  osFamily="unix"
+  username="vagrant"
+  hostname="192.168.100.12"
+  sudo-command-enabled="true"
+  ssh-key-storage-path="keys/private.key"
+  />
+</project>
+
+EOF
+
+sshpass -p vagrant ssh-copy-id -o StrictHostKeyChecking=no vagrant@192.168.100.11
+sshpass -p vagrant ssh-copy-id -o StrictHostKeyChecking=no vagrant@192.168.100.12
+cat /home/vagrant/.ssh/id_rsa
+
+SCRIPT
+
 
 node1disk1 = "./node1disk1.vdi";
 node2disk1 = "./node2disk1.vdi";
@@ -83,25 +116,6 @@ ip_node3 = "192.168.100.12";
 
 
 Vagrant.configure("2") do |config|
-
-    config.vm.define "node1" do |node1|
-      node1.vm.network "private_network", ip: ip_node1
-      node1.vm.hostname = "node1"
-      node1.vm.define "node1"
-      node1.vm.box_download_insecure = true
-      node1.vm.box = "centos/7"
-      node1.vm.provider "virtualbox" do |vb|
-        vb.memory = "2048"
-        if not File.exists?(node1disk1)
-          vb.customize ['createhd', '--filename', node1disk1, '--variant', 'Fixed', '--size', 1 * 1024]
-          vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 0, '--device', 1, '--type', 'hdd', '--medium', node1disk1]
-        end
-      end
-      node1.vm.provision "shell", inline: $sdb1
-      node1.vm.provision "shell", inline: $rundeck
-      #node1.vm.provision "shell", inline: $docker
-      
-    end
   
     config.vm.define "node2" do |node2|
       node2.vm.network "private_network", ip: ip_node2
@@ -135,6 +149,26 @@ Vagrant.configure("2") do |config|
       end
       node3.vm.provision "shell", inline: $sdb1
       #node3.vm.provision "shell", inline: $docker
+    end
+
+    config.vm.define "node1" do |node1|
+      node1.vm.network "private_network", ip: ip_node1
+      node1.vm.hostname = "node1"
+      node1.vm.define "node1"
+      node1.vm.box_download_insecure = true
+      node1.vm.box = "centos/7"
+      node1.vm.provider "virtualbox" do |vb|
+        vb.memory = "2048"
+        if not File.exists?(node1disk1)
+          vb.customize ['createhd', '--filename', node1disk1, '--variant', 'Fixed', '--size', 1 * 1024]
+          vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 0, '--device', 1, '--type', 'hdd', '--medium', node1disk1]
+        end
+      end
+      node1.vm.provision "shell", inline: $sdb1
+      node1.vm.provision "shell", inline: $rundeck
+      node1.vm.provision "shell", inline: $install
+      #node1.vm.provision "shell", inline: $docker
+      
     end
   
   end

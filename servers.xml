@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+<node name="node2"
+  osFamily="unix"
+  username="vagrant"
+  hostname="192.168.100.11"
+  sudo-command-enabled="true"
+  ssh-key-storage-path="keys/private.key"
+  />
+<node name="node3"
+  osFamily="unix"
+  username="vagrant"
+  hostname="192.168.100.12"
+  sudo-command-enabled="true"
+  ssh-key-storage-path="keys/private.key"
+  />
+</project>
