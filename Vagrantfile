@@ -25,8 +25,8 @@ rpm -Uvh http://repo.rundeck.org/latest.rpm
 yum install rundeck java -y
 yum update rundeck -y
 service rundeckd start
-sed -i '' 's/framework.server.url = http://127.0.0.1:4440/framework.server.url = http://192.168.100.10:4440/g' /etc/rundeck/framework.properties
-sed -i '' 's/grails.serverURL=http://127.0.0.1:4440/grails.serverURL=http://192.168.100.10:4440/g' /etc/rundeck/rundeck-config.properties
+sed -i '' 's/127.0.0.1:4440/192.168.100.10:4440/g' /etc/rundeck/framework.properties
+sed -i '' 's/127.0.0.1:4440/192.168.100.10:4440/g' /etc/rundeck/rundeck-config.properties
 sed -i '' 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 SCRIPT
 
