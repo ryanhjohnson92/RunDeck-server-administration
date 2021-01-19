@@ -16,6 +16,9 @@ if mount | grep /mnt/data1 > /dev/null; then
 else
   mount /mnt/data1
 fi
+# Change PasswordAuth to YES
+sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+systemctl restart sshd
 SCRIPT
 
 $rundeck = <<-SCRIPT
@@ -25,9 +28,8 @@ rpm -Uvh http://repo.rundeck.org/latest.rpm
 yum install rundeck java -y
 yum update rundeck -y
 service rundeckd start
-sed -i '' 's/127.0.0.1:4440/192.168.100.10:4440/g' /etc/rundeck/framework.properties
-sed -i '' 's/127.0.0.1:4440/192.168.100.10:4440/g' /etc/rundeck/rundeck-config.properties
-sed -i '' 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+sed -i 's/localhost:4440$/192.168.100.10:4440/g' /etc/rundeck/framework.properties
+sed -i 's/localhost:4440$/192.168.100.10:4440/g' /etc/rundeck/rundeck-config.properties
 SCRIPT
 
 
@@ -97,42 +99,42 @@ Vagrant.configure("2") do |config|
       end
       node1.vm.provision "shell", inline: $sdb1
       node1.vm.provision "shell", inline: $rundeck
-      node1.vm.provision "shell", inline: $docker
+      #node1.vm.provision "shell", inline: $docker
       
     end
   
-    config.vm.define "node2" do |node2|
-      node2.vm.network "private_network", ip: ip_node2
-      node2.vm.hostname = "node2"
-      node2.vm.define "node2"
-      node2.vm.box_download_insecure = true
-      node2.vm.box = "centos/7"
-      node2.vm.provider "virtualbox" do |vb|
-        vb.memory = "2048"
-        if not File.exists?(node2disk1)
-          vb.customize ['createhd', '--filename', node2disk1, '--variant', 'Fixed', '--size', 1 * 1024]
-          vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 0, '--device', 1, '--type', 'hdd', '--medium', node2disk1]
-        end
-      end
-      node2.vm.provision "shell", inline: $sdb1
+    # config.vm.define "node2" do |node2|
+    #   node2.vm.network "private_network", ip: ip_node2
+    #   node2.vm.hostname = "node2"
+    #   node2.vm.define "node2"
+    #   node2.vm.box_download_insecure = true
+    #   node2.vm.box = "centos/7"
+    #   node2.vm.provider "virtualbox" do |vb|
+    #     vb.memory = "2048"
+    #     if not File.exists?(node2disk1)
+    #       vb.customize ['createhd', '--filename', node2disk1, '--variant', 'Fixed', '--size', 1 * 1024]
+    #       vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 0, '--device', 1, '--type', 'hdd', '--medium', node2disk1]
+    #     end
+    #   end
+    #   node2.vm.provision "shell", inline: $sdb1
     #   node2.vm.provision "shell", inline: $docker
-    end
+    # end
   
-    config.vm.define "node3" do |node3|
-      node3.vm.network "private_network", ip: ip_node3
-      node3.vm.hostname = "node3"
-      node3.vm.define "node3"
-      node3.vm.box_download_insecure = true
-      node3.vm.box = "centos/7"
-      node3.vm.provider "virtualbox" do |vb|
-        vb.memory = "2048"
-        if not File.exists?(node3disk1)
-          vb.customize ['createhd', '--filename', node3disk1, '--variant', 'Fixed', '--size', 1 * 1024]
-          vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 0, '--device', 1, '--type', 'hdd', '--medium', node3disk1]
-        end
-      end
-      node3.vm.provision "shell", inline: $sdb1
+    # config.vm.define "node3" do |node3|
+    #   node3.vm.network "private_network", ip: ip_node3
+    #   node3.vm.hostname = "node3"
+    #   node3.vm.define "node3"
+    #   node3.vm.box_download_insecure = true
+    #   node3.vm.box = "centos/7"
+    #   node3.vm.provider "virtualbox" do |vb|
+    #     vb.memory = "2048"
+    #     if not File.exists?(node3disk1)
+    #       vb.customize ['createhd', '--filename', node3disk1, '--variant', 'Fixed', '--size', 1 * 1024]
+    #       vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 0, '--device', 1, '--type', 'hdd', '--medium', node3disk1]
+    #     end
+    #   end
+    #   node3.vm.provision "shell", inline: $sdb1
     #   node3.vm.provision "shell", inline: $docker
-    end
+    # end
   
   end
