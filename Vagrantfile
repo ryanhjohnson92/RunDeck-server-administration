@@ -103,38 +103,38 @@ Vagrant.configure("2") do |config|
       
     end
   
-    # config.vm.define "node2" do |node2|
-    #   node2.vm.network "private_network", ip: ip_node2
-    #   node2.vm.hostname = "node2"
-    #   node2.vm.define "node2"
-    #   node2.vm.box_download_insecure = true
-    #   node2.vm.box = "centos/7"
-    #   node2.vm.provider "virtualbox" do |vb|
-    #     vb.memory = "2048"
-    #     if not File.exists?(node2disk1)
-    #       vb.customize ['createhd', '--filename', node2disk1, '--variant', 'Fixed', '--size', 1 * 1024]
-    #       vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 0, '--device', 1, '--type', 'hdd', '--medium', node2disk1]
-    #     end
-    #   end
-    #   node2.vm.provision "shell", inline: $sdb1
-    #   node2.vm.provision "shell", inline: $docker
-    # end
+    config.vm.define "node2" do |node2|
+      node2.vm.network "private_network", ip: ip_node2
+      node2.vm.hostname = "node2"
+      node2.vm.define "node2"
+      node2.vm.box_download_insecure = true
+      node2.vm.box = "centos/7"
+      node2.vm.provider "virtualbox" do |vb|
+        vb.memory = "2048"
+        if not File.exists?(node2disk1)
+          vb.customize ['createhd', '--filename', node2disk1, '--variant', 'Fixed', '--size', 1 * 1024]
+          vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 0, '--device', 1, '--type', 'hdd', '--medium', node2disk1]
+        end
+      end
+      node2.vm.provision "shell", inline: $sdb1
+      #node2.vm.provision "shell", inline: $docker
+    end
   
-    # config.vm.define "node3" do |node3|
-    #   node3.vm.network "private_network", ip: ip_node3
-    #   node3.vm.hostname = "node3"
-    #   node3.vm.define "node3"
-    #   node3.vm.box_download_insecure = true
-    #   node3.vm.box = "centos/7"
-    #   node3.vm.provider "virtualbox" do |vb|
-    #     vb.memory = "2048"
-    #     if not File.exists?(node3disk1)
-    #       vb.customize ['createhd', '--filename', node3disk1, '--variant', 'Fixed', '--size', 1 * 1024]
-    #       vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 0, '--device', 1, '--type', 'hdd', '--medium', node3disk1]
-    #     end
-    #   end
-    #   node3.vm.provision "shell", inline: $sdb1
-    #   node3.vm.provision "shell", inline: $docker
-    # end
+    config.vm.define "node3" do |node3|
+      node3.vm.network "private_network", ip: ip_node3
+      node3.vm.hostname = "node3"
+      node3.vm.define "node3"
+      node3.vm.box_download_insecure = true
+      node3.vm.box = "centos/7"
+      node3.vm.provider "virtualbox" do |vb|
+        vb.memory = "2048"
+        if not File.exists?(node3disk1)
+          vb.customize ['createhd', '--filename', node3disk1, '--variant', 'Fixed', '--size', 1 * 1024]
+          vb.customize ['storageattach', :id,  '--storagectl', 'IDE', '--port', 0, '--device', 1, '--type', 'hdd', '--medium', node3disk1]
+        end
+      end
+      node3.vm.provision "shell", inline: $sdb1
+      #node3.vm.provision "shell", inline: $docker
+    end
   
   end
