@@ -8,12 +8,12 @@ pipeline {
                 archiveArtifacts artifacts: 'dist/vagrant.zip'
             }
         }
-        stage('DeployingToStaging'){
+        stage('DeployToStaging') {
             when {
                 branch 'master'
             }
             steps {
-                withCredentials([usernamePassword(credentialId: 'webserver_login', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')])
+                withCredentials([usernamePassword(credentialsId: 'webserver_login', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
                     sshPublisher(
                         failOnError: true,
                         continueOnError: false,
@@ -28,15 +28,16 @@ pipeline {
                                     sshTransfer(
                                         sourceFiles: 'dist/vagrant.zip',
                                         removePrefix: 'dist/',
-                                        remoteDirectory: '/home/cloud_user/',
+                                        remoteDirectory: '/home/cloud_user'
                                     )
                                 ]
                             )
                         ]
                     )
+                }
             }
         }
-        stage('DeployingToProduction'){
+        stage('DeployToProduction') {
             when {
                 branch 'master'
             }
@@ -58,7 +59,7 @@ pipeline {
                                     sshTransfer(
                                         sourceFiles: 'dist/vagrant.zip',
                                         removePrefix: 'dist/',
-                                        remoteDirectory: '/home/cloud_user',
+                                        remoteDirectory: '/home/cloud_user'
                                     )
                                 ]
                             )
