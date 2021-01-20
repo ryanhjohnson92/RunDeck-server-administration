@@ -1,4 +1,5 @@
 node1disk1.vdi
+.gradle
 node2disk1.vdi
 node3disk1.vdi
 .vagrant
