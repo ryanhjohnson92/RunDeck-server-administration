@@ -155,6 +155,7 @@ Vagrant.configure("2") do |config|
       node1.vm.define "node1"
       node1.vm.box_download_insecure = true
       node1.vm.box = "centos/7"
+      node1.vm.synced_folder ".", "/vagrant", disabled: false
       node1.vm.provider "virtualbox" do |vb|
         vb.memory = "2048"
         if not File.exists?(node1disk1)
