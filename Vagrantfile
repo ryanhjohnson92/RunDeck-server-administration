@@ -75,8 +75,7 @@ $install = <<SCRIPT
 
 sudo yum -y install sshpass
 ssh-keygen -t rsa -b 4096 -C "ryan.johnson@wrenkitchens.com" -N "" -f /home/vagrant/.ssh/id_rsa
-chmod -R 755 /home/vagrant/.ssh
-chmod o+x /home/vagrant
+sudo chmod -R 777 /home/vagrant
 
 cat > servers.xml << EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -99,9 +98,8 @@ cat > servers.xml << EOF
 
 EOF
 
-sshpass -p vagrant ssh-copy-id -o StrictHostKeyChecking=no vagrant@192.168.100.11
-sshpass -p vagrant ssh-copy-id -o StrictHostKeyChecking=no vagrant@192.168.100.12
-cat /home/vagrant/.ssh/id_rsa
+sshpass -p vagrant ssh-copy-id -o StrictHostKeyChecking=no -i /home/vagrant/.ssh/id_rsa -f vagrant@192.168.100.11
+sshpass -p vagrant ssh-copy-id -o StrictHostKeyChecking=no -i /home/vagrant/.ssh/id_rsa -f vagrant@192.168.100.12
 
 SCRIPT
 
