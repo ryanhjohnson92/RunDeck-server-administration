@@ -1,0 +1,11 @@
+task build
+
+task zip(type: Zip) {
+    from ('.') {
+        include "Vagrantfile"
+    }
+    destinationDir(file("dist"))
+    baseName "vagrant"
+}
+
+build.dependsOn zip
