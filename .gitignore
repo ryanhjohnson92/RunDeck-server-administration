@@ -3,3 +3,4 @@ node1disk1.vdi
 node2disk1.vdi
 node3disk1.vdi
 .vagrant
+vagrant.code-workspace
